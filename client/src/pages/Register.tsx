@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 function Register() {
   const [login, setLogin] = useState({
@@ -7,6 +9,10 @@ function Register() {
     email: "",
     password: "",
   });
+
+  const { setUser } = useAuth();
+
+  const navigate = useNavigate();
 
   const handleInputsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -20,7 +26,16 @@ function Register() {
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, login);
+    const newUser = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/auth/register`,
+      login,
+    );
+
+    const currentUser = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/auth/find/${newUser.data.userId}`,
+    );
+
+    setUser(currentUser.data);
 
     setLogin({
       username: "",
@@ -28,7 +43,7 @@ function Register() {
       password: "",
     });
 
-    console.info("formulaire posté");
+    navigate("/");
   };
 
   return (
@@ -38,6 +53,7 @@ function Register() {
           id="username"
           name="username"
           type="username"
+          placeholder="username"
           value={login.username}
           onChange={handleInputsChange}
           required
@@ -47,6 +63,7 @@ function Register() {
           id="email"
           name="email"
           type="email"
+          placeholder="email"
           value={login.email}
           onChange={handleInputsChange}
           required
@@ -56,12 +73,13 @@ function Register() {
           id="password"
           name="password"
           type="password"
+          placeholder="password"
           required
           value={login.password}
           onChange={handleInputsChange}
         />
 
-        <button type="submit">Connexion</button>
+        <button type="submit">S'enregistrer</button>
       </form>
     </div>
   );
