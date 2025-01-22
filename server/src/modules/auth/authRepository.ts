@@ -7,6 +7,7 @@ type User = {
   id?: number;
   username: string;
   email: string;
+  password: string;
   hashedPassword: string;
   role?: string;
 };
@@ -17,7 +18,7 @@ class AuthRepository {
       const result = await databaseClient.query<Result>(
         `
   INSERT INTO users (username, email, password, role)
-  VALUES (?, ?, ?)
+  VALUES (?, ?, ?, ?)
   `,
         [user.username, user.email, user.hashedPassword, user.role],
       );
@@ -45,6 +46,20 @@ class AuthRepository {
       LIMIT 1
       `,
       [email],
+    );
+
+    return rows[0] as User;
+  }
+
+  async readOneById(id: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      `
+      SELECT id, email, username, role
+      FROM users
+      WHERE id = ?
+      LIMIT 1
+      `,
+      [id],
     );
 
     return rows[0] as User;

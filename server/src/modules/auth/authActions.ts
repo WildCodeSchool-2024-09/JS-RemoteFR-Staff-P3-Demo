@@ -15,11 +15,7 @@ const login: RequestHandler = async (req, res) => {
       return;
     }
 
-    if (!user.hashedPassword) {
-      throw new Error("Password field is missing in user object.");
-    }
-
-    const isPasswordValid = await passwordsMatch(password, user.hashedPassword);
+    const isPasswordValid = await passwordsMatch(user.password, password);
 
     if (!isPasswordValid) {
       res.status(401).json({ message: "Invalid email or password" });
@@ -35,12 +31,20 @@ const login: RequestHandler = async (req, res) => {
         maxAge: 1000 * 60 * 60,
       })
       .status(200)
-      .json({ message: "Connexion réussie" });
+      .json({ message: "Connexion réussie", userId: user.id });
   } catch (error) {
     console.error("Unexpected error: ", error);
     res.status(500).json({ message: "An unexpected error occurred" });
     return;
   }
+};
+
+const findCurrentUser: RequestHandler = async (req, res) => {
+  const { id } = req.params;
+
+  const user = await authRepository.readOneById(Number(id));
+
+  res.status(200).json(user);
 };
 
 const register: RequestHandler = async (req, res) => {
@@ -49,7 +53,7 @@ const register: RequestHandler = async (req, res) => {
   try {
     const hashedPassword = await argon2.hash(password);
 
-    const datasToRegister = { username, email, hashedPassword };
+    const datasToRegister = { username, email, hashedPassword, password };
 
     const registeredUser = await authRepository.create(datasToRegister);
 
@@ -67,4 +71,4 @@ const register: RequestHandler = async (req, res) => {
   }
 };
 
-export default { login, register };
+export default { login, findCurrentUser, register };
