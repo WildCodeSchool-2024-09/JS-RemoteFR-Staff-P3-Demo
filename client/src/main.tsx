@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import App from "./App";
+import { AuthProvider } from "./contexts/AuthContext";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -34,6 +35,8 @@ if (rootElement == null) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 );
