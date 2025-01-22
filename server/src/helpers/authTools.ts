@@ -5,13 +5,14 @@ type User = {
   id?: number;
   username: string;
   email: string;
+  password: string;
   hashedPassword: string;
   role?: string;
 };
 
 const passwordsMatch = async (
-  password: string,
   hash: string,
+  password: string,
 ): Promise<boolean> => {
   return await argon2.verify(hash, password);
 };
