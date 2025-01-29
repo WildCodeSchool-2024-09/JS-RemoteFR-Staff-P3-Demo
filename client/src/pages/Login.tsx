@@ -28,20 +28,17 @@ function Login() {
     const result = await axios.post(
       `${import.meta.env.VITE_API_URL}/api/auth/login`,
       login,
+      { withCredentials: true },
     );
 
     const currentUser = await axios.get(
       `${import.meta.env.VITE_API_URL}/api/auth/find/${result.data.userId}`,
+      { withCredentials: true },
     );
 
     setUser(currentUser.data);
 
-    setLogin({
-      email: "",
-      password: "",
-    });
-
-    navigate("/");
+    navigate(`/utilisateurs/${currentUser.data.id}`);
   };
 
   return (
