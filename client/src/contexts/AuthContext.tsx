@@ -1,8 +1,15 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
 type AuthContextType = {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  logOut: () => void;
 };
 
 type AuthProviderProps = {
@@ -13,7 +20,7 @@ type User = {
   id: number;
   username: string;
   email: string;
-  role: string;
+  role: "admin" | "user";
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,7 +28,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const value = useMemo(() => ({ user, setUser }), [user]);
+  const logOut = useCallback(() => {
+    setUser(null);
+  }, []);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <logOut is in a useCallback and will never change>
+  const value = useMemo(() => ({ user, setUser, logOut }), [user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
