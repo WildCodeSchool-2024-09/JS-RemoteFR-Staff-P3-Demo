@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import cors from "cors";
 import express from "express";
 
@@ -13,21 +15,7 @@ app.use(express.json());
 
 app.use("/api", router);
 
-/* ************************************************************************* */
-
-// Production-ready setup: What is it for?
-
-// The code includes sections to set up a production environment where the client and server are executed from the same processus.
-
-// What it's for:
-// - Serving client static files from the server, which is useful when building a single-page application with React.
-// - Redirecting unhandled requests (e.g., all requests not matching a defined API route) to the client's index.html. This allows the client to handle client-side routing.
-
-import fs from "node:fs";
-import path from "node:path";
-
 // Serve server resources
-
 const publicFolderPath = path.join(__dirname, "../../server/public");
 
 if (fs.existsSync(publicFolderPath)) {
@@ -35,14 +23,12 @@ if (fs.existsSync(publicFolderPath)) {
 }
 
 // Serve client resources
-
 const clientBuildPath = path.join(__dirname, "../../client/dist");
 
 if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath));
 
   // Redirect unhandled requests to the client index file
-
   app.get("*", (_, res) => {
     res.sendFile("index.html", { root: clientBuildPath });
   });
