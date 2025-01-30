@@ -38,7 +38,7 @@ function Login() {
 
     setUser(currentUser.data);
 
-    navigate(`/utilisateurs/${currentUser.data.id}`);
+    navigate(`/utilisateurs/${currentUser.data.id}/profile`);
   };
 
   return (

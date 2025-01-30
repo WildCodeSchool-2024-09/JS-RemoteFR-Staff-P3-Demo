@@ -1,16 +1,32 @@
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-import profilPicture from "../assets/images/profil_neutral.webp";
+import axios from "axios";
+import defaultProfilePicture from "../assets/images/profil_neutral.webp";
 
 function Profile() {
-  const { user, logOut } = useAuth();
+  const { user, setUser } = useAuth();
 
-  const navigate = useNavigate();
+  const handleChangeAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      return;
+    }
 
-  const handleLogOut = () => {
-    logOut();
-    navigate("/");
+    const formData = new FormData();
+    formData.append("avatar", e.target.files[0]);
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/files/upload`,
+        formData,
+        { withCredentials: true },
+      );
+
+      setUser((prev) =>
+        prev ? { ...prev, profilePicture: response.data.profilePicPath } : prev,
+      );
+    } catch (error) {
+      console.error("Error uploading the avatar", error);
+    }
   };
 
   return (
@@ -19,24 +35,36 @@ function Profile() {
 
       <section>
         <figure className="profilPicture">
-          <img src={profilPicture} alt={user ? user.username : "inconnu"} />
+          {user?.profilePicture ? (
+            <img
+              src={`${import.meta.env.VITE_API_URL}/${user.profilePicture}`}
+              alt={user.username}
+            />
+          ) : (
+            <img
+              src={defaultProfilePicture}
+              alt={user ? user.username : "inconnu"}
+            />
+          )}
         </figure>
 
         <div>
           <p>Email : {user ? user.email : "inconnu"}</p>
 
           <p>Role : {user ? user.role : "inconnu"}</p>
-
-          <p>
-            URL de la photo de profil :{" "}
-            {user?.profilePicture ? user.profilePicture : "inconnu"}
-          </p>
         </div>
-      </section>
 
-      <button type="button" onClick={handleLogOut}>
-        Déconnexion
-      </button>
+        <form encType="multipart/form-data">
+          <label htmlFor="avatar">Changez votre photo de profil</label>
+          <input
+            type="file"
+            name="avatar"
+            accept="image/*"
+            id="avatar"
+            onChange={handleChangeAvatar}
+          />
+        </form>
+      </section>
     </div>
   );
 }

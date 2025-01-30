@@ -1,11 +1,18 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 import { useAuth } from "./contexts/AuthContext";
 
 import "./App.css";
 
 function App() {
-  const { user } = useAuth();
+  const { user, logOut } = useAuth();
+
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    logOut();
+    navigate("/");
+  };
 
   return (
     <>
@@ -15,7 +22,12 @@ function App() {
         <Link to="/register">Register</Link>
 
         {user && (
-          <Link to={`/utilisateurs/${user.username}/profile`}>Profile</Link>
+          <>
+            <Link to={`/utilisateurs/${user.username}/profile`}>Profile</Link>
+            <button type="button" onClick={handleLogOut}>
+              DÉCONNEXION
+            </button>
+          </>
         )}
       </nav>
 
