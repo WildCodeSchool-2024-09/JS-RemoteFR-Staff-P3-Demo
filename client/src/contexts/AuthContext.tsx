@@ -21,6 +21,7 @@ type User = {
   username: string;
   email: string;
   role: "admin" | "user";
+  profilePicture: string;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
