@@ -14,14 +14,25 @@ function Profile() {
   };
 
   return (
-    <div id="ProfileContainer">
-      <h1>Profil de {user ? user.username : "inconnu"}</h1>
+    <div id="profile-container">
+      <h1>Bonjour {user ? user.username : "inconnu(e)"} :)</h1>
 
-      <img src={profilPicture} alt={user ? user.username : "inconnu"} />
+      <section>
+        <figure className="profilPicture">
+          <img src={profilPicture} alt={user ? user.username : "inconnu"} />
+        </figure>
 
-      <p>Email : {user ? user.email : "inconnu"}</p>
+        <div>
+          <p>Email : {user ? user.email : "inconnu"}</p>
 
-      <p>Role : {user ? user.role : "inconnu"}</p>
+          <p>Role : {user ? user.role : "inconnu"}</p>
+
+          <p>
+            URL de la photo de profil :{" "}
+            {user?.profilePicture ? user.profilePicture : "inconnu"}
+          </p>
+        </div>
+      </section>
 
       <button type="button" onClick={handleLogOut}>
         Déconnexion

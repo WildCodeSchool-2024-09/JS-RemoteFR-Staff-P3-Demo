@@ -42,12 +42,15 @@ function Login() {
   };
 
   return (
-    <div id="RegisterContainer">
+    <div id="login-container">
+      <h1>Login</h1>
+
       <form onSubmit={handleFormSubmit}>
         <input
           id="email"
           name="email"
           type="email"
+          placeholder="email"
           value={login.email}
           onChange={handleInputsChange}
           required
@@ -57,6 +60,7 @@ function Login() {
           id="password"
           name="password"
           type="password"
+          placeholder="password"
           required
           value={login.password}
           onChange={handleInputsChange}
