@@ -2,9 +2,10 @@ import express from "express";
 import multer from "multer";
 
 import authActions from "./modules/auth/authActions";
+import fileActions from "./modules/files/fileActions";
 
 import { checkAuthDatas } from "./middlewares/checkAuthDatas";
-import fileActions from "./modules/files/fileActions";
+import { upload } from "./middlewares/multerUpload";
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ router.get("/auth/find/:id", authActions.findCurrentUser);
 
 router.post(
   "/files/upload",
+  upload,
   multer({ dest: "./public/assets/uploads/profile-pics" }).single("avatar"),
   fileActions.upload,
 );
