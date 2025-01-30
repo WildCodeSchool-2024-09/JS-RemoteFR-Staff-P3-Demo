@@ -28,29 +28,29 @@ function Login() {
     const result = await axios.post(
       `${import.meta.env.VITE_API_URL}/api/auth/login`,
       login,
+      { withCredentials: true },
     );
 
     const currentUser = await axios.get(
       `${import.meta.env.VITE_API_URL}/api/auth/find/${result.data.userId}`,
+      { withCredentials: true },
     );
 
     setUser(currentUser.data);
 
-    setLogin({
-      email: "",
-      password: "",
-    });
-
-    navigate("/");
+    navigate(`/utilisateurs/${currentUser.data.id}`);
   };
 
   return (
-    <div id="RegisterContainer">
+    <div id="login-container">
+      <h1>Login</h1>
+
       <form onSubmit={handleFormSubmit}>
         <input
           id="email"
           name="email"
           type="email"
+          placeholder="email"
           value={login.email}
           onChange={handleInputsChange}
           required
@@ -60,6 +60,7 @@ function Login() {
           id="password"
           name="password"
           type="password"
+          placeholder="password"
           required
           value={login.password}
           onChange={handleInputsChange}
