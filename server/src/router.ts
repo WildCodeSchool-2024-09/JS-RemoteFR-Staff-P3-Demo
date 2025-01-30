@@ -14,8 +14,8 @@ router.get("/auth/find/:id", authActions.findCurrentUser);
 
 router.post(
   "/files/upload",
-  multer({ dest: "uploads" }).single("avatar"),
-  fileActions.upload
+  multer({ dest: "./public/assets/uploads/profile-pics" }).single("avatar"),
+  fileActions.upload,
 );
 
 export default router;
