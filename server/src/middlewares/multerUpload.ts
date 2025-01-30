@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { Request } from "express";
+import type { NextFunction, Request, Response } from "express";
 import multer, { type StorageEngine } from "multer";
 
 const DBPath = "assets/uploads/profile-pics";
@@ -24,7 +24,7 @@ const fileFilter = (
   file: Express.Multer.File,
   cb: (error: Error | null, acceptFile?: boolean) => void,
 ) => {
-  const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif"];
+  const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
   const extension = path.extname(file.originalname).toLowerCase();
 
   if (!file.mimetype.startsWith("image")) {
@@ -34,10 +34,23 @@ const fileFilter = (
   if (allowedExtensions.includes(extension)) {
     cb(null, true);
   } else {
-    cb(new Error("Votre fichier doit être au format jpg, jpeg, png ou gif"));
+    cb(
+      new Error(
+        "Votre fichier doit être au format jpg, jpeg, png, gif ou webp",
+      ),
+    );
   }
 };
 
 const upload = multer({ storage, fileFilter }).single("avatar");
 
-export { upload };
+const adjustFilePath = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.file) {
+    return next();
+  }
+
+  req.file.path = `${DBPath}/${req.file.filename}`;
+  next();
+};
+
+export { adjustFilePath, upload };
