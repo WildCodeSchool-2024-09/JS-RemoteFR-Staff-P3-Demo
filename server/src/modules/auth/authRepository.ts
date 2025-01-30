@@ -54,9 +54,11 @@ class AuthRepository {
   async readOneById(id: number) {
     const [rows] = await databaseClient.query<Rows>(
       `
-      SELECT id, email, username, role
+      SELECT users.id, email, username, role, path profilePicture
       FROM users
-      WHERE id = ?
+      JOIN profile_pictures
+      ON users.id = profile_pictures.user_id
+      WHERE users.id = ?
       LIMIT 1
       `,
       [id],
