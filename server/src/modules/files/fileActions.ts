@@ -17,7 +17,9 @@ const upload: RequestHandler = async (req, res) => {
 
   await fileRepository.createProfilePicture(filename, path, userId);
 
-  res.status(200).json({ message: "File uploaded successfully" });
+  res
+    .status(200)
+    .json({ message: "Photo mise à jour avec succès", profilePicPath: path });
 };
 
 export default { upload };
